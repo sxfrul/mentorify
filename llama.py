@@ -9,7 +9,7 @@ def chat(messages):
     r = requests.post(
         "http://0.0.0.0:11434/api/chat",
         json={"model": model, "messages": messages, "stream": True},
-	stream=True
+        stream=True
     )
     r.raise_for_status()
     output = ""
@@ -31,16 +31,28 @@ def chat(messages):
 
 
 def main():
-    messages = []
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a chatbot named Mentorify AI, designed to help people learn."
+            )
+        }
+    ]
 
     while True:
         user_input = input("Enter a prompt: ")
         if not user_input:
             exit()
         print()
+
+        # Add the user's message to the conversation
         messages.append({"role": "user", "content": user_input})
+
+        # Chat with the user prompt
         message = chat(messages)
         messages.append(message)
+
         print("\n\n")
 
 
