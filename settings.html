@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="mentorify.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <div class="sidebar">
+            <div class="profile-section">
+                <div class="profile-icon"></div>
+                <h2 class="username">User</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="personal.html">Personal</a></li>
+                <li><a href="quicklink.html">Quick Link</a></li>
+                <li><a href="settings.html" class="active">Settings</a></li>
+            </ul>
+        </div>
+
+    
+        <div class="main-content">
+            <h1 class="welcome">Settings</h1>
+            <form class="form">
+                <label for="language">Language:</label>
+                <select id="language">
+                    <option value="en">English</option>
+                    <option value="ms">Malay</option>
+                    <option value="fr">French</option>
+                </select>
+
+                <label for="theme">Theme:</label>
+                <select id="theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+
+                <button type="submit" class="save-btn">Apply Settings</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
