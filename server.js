@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Database connection
 const db = mysql.createConnection({
-  host: "localhost",         // Replace with your MySQL host
+  host: "34.126.191.100",         // Replace with your MySQL host
   user: "root",              // Replace with your MySQL username
   password: "mentorify",     // Replace with your MySQL password
   database: "mentorify"      // Replace with your MySQL database name
@@ -83,5 +83,5 @@ app.get("/user/:id", (req, res) => {
   
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://34.126.191.100:${PORT}`);
 });
