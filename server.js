@@ -91,7 +91,11 @@ app.post("/save-answer", (req, res) => {
   }
 
   // SQL query to insert the user's answer into the user_answers table
-  const query = "INSERT INTO user_answers (user_id, question_category, question_number, selected_answer) VALUES (?, ?, ?, ?)";
+  const query = `
+    INSERT INTO user_answers (user_id, question_category, question_number, selected_answer)
+    VALUES (?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE selected_answer = VALUES(selected_answer);
+  `;
   db.query(query, [userId, questionCategory, questionNumber, selectedAnswer], (err, results) => {
     if (err) {
       console.error("Error saving answer:", err.message);
