@@ -80,6 +80,36 @@ app.get("/user/:id", (req, res) => {
       res.json(results[0]);
     });
   });
+
+// Save the answer to the database
+app.post("/save-answer", (req, res) => {
+  const { userId, questionCategory, questionNumber, selectedAnswer } = req.body;
+
+  // Ensure the necessary fields are provided
+  if (!userId || !questionCategory || !questionNumber || !selectedAnswer) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  // SQL query to insert the user's answer into the user_answers table
+  const query = "INSERT INTO user_answers (user_id, question_category, question_number, selected_answer) VALUES (?, ?, ?, ?)";
+  db.query(query, [userId, questionCategory, questionNumber, selectedAnswer], (err, results) => {
+    if (err) {
+      console.error("Error saving answer:", err.message);
+      return res.status(500).json({ error: "Failed to save answer." });
+    }
+
+    // Log the results
+    console.log("Answer saved successfully, results:", results); // Logs the results object
+
+    // Send a response back with details
+    res.status(200).json({
+      message: "Answer saved successfully.",
+      affectedRows: results.affectedRows,  // This shows how many rows were affected
+      insertId: results.insertId // This shows the ID of the inserted row (if it's auto-incremented)
+    });
+  });
+});
+
   
 // Start the server
 app.listen(PORT, () => {

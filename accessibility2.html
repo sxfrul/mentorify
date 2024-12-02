@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personalization Page</title>
-    <link rel="stylesheet" href="mentorify.css">
-</head>
-<body class="personalization">
+    <link rel="stylesheet" href="mentorify.css" />
+  </head>
+  <body class="personalization">
     <div class="container">
-        <div class="form-box">
-            <h1 class="title">3. Accessibility and Support Features</h1>
-            <h2 class="question">What font size do you find comfortable?</h2>
-            <div class="options">
-                <button class="option-btn1">Small</button>
-                <button class="option-btn2">Medium</button>
-                <button class="option-btn3">Large</button>
-            </div>
-            <a href="tutorial.html" class="next-btn">Done</a>
+      <div class="form-box">
+        <h1 class="title">3. Accessibility and Support Features</h1>
+        <h2 class="question">What font size do you find comfortable?</h2>
+        <div class="options">
+          <button class="option-btn">Small</button>
+          <button class="option-btn">Medium</button>
+          <button class="option-btn">Large</button>
         </div>
+        <a href="tutorial.html" class="next-btn" id="next-btn" disabled>Done</a>
+      </div>
     </div>
-</body>
+    <script src="common.js"></script>
+    <script>
+      captureSelection(".option-btn", "userId", "font_size", 6);
+    </script>
+  </body>
 </html>

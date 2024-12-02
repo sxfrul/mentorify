@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personalization Page</title>
-    <link rel="stylesheet" href="mentorify.css">
-</head>
-<body class="personalization">
+    <link rel="stylesheet" href="mentorify.css" />
+  </head>
+  <body class="personalization">
     <div class="container">
-        <div class="form-box">
-            <h1 class="title">1. Learning preferences</h1>
-            <h2 class="question">What type of content format do you prefer?</h2>
-            <div class="options">
-                <button class="option-btn">Videos</button>
-                <button class="option-btn">Text Summaries</button>
-                <button class="option-btn">Diagrams or Mind Maps</button>
-                <button class="option-btn">Interactive Exercises</button>
-            </div>
-            <a href="preferences2.html" class="next-btn">Next</a>
+      <div class="form-box">
+        <h1 class="title">1. Learning Preferences</h1>
+        <h2 class="question">What type of content format do you prefer?</h2>
+        <div class="options">
+          <button class="option-btn">Videos</button>
+          <button class="option-btn">Text Summaries</button>
+          <button class="option-btn">Diagrams or Mind Maps</button>
+          <button class="option-btn">Interactive Exercises</button>
         </div>
+        <a href="preferences2.html" class="next-btn" id="next-btn" disabled
+          >Next</a
+        >
+      </div>
     </div>
-</body>
+    <script src="common.js"></script>
+    <script>
+      captureSelection(".option-btn", "userId", "learning_preferences", 1);
+    </script>
+  </body>
 </html>

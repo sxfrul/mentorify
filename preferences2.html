@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personalization Page</title>
-    <link rel="stylesheet" href="mentorify.css">
-</head>
-<body class="personalization">
+    <link rel="stylesheet" href="mentorify.css" />
+  </head>
+  <body class="personalization">
     <div class="container">
-        <div class="form-box">
-            <h1 class="title">1. Learning preferences</h1>
-            <h2 class="question">How do you like the information to be presented?</h2>
-            <div class="options">
-                <button class="option-btn">Step-by-step with explanations</button>
-                <button class="option-btn">Visual overview (like mind maps)</button>
-                <button class="option-btn">Summarized in bullet points</button>
-                <button class="option-btn">Detailed text with examples</button>
-            </div>
-            <a href="challenges.html" class="next-btn">Next</a>
+      <div class="form-box">
+        <h1 class="title">1. Learning Preferences</h1>
+        <h2 class="question">
+          How do you like the information to be presented?
+        </h2>
+        <div class="options">
+          <button class="option-btn">Step-by-step with explanations</button>
+          <button class="option-btn">Visual overview (like mind maps)</button>
+          <button class="option-btn">Summarized in bullet points</button>
+          <button class="option-btn">Detailed text with examples</button>
         </div>
+        <a href="challenges.html" class="next-btn" id="next-btn" disabled
+          >Next</a
+        >
+      </div>
     </div>
-</body>
+    <script src="common.js"></script>
+    <script>
+      captureSelection(".option-btn", "userId", "learning_preferences", 2);
+    </script>
+  </body>
 </html>
