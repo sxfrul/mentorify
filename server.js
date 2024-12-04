@@ -114,6 +114,33 @@ app.post("/save-answer", (req, res) => {
   });
 });
 
+
+/// Save or update user's disability
+app.post("/save-disability", (req, res) => {
+  const { userId, disability } = req.body;
+
+  // Ensure the necessary fields are provided
+  if (!userId || !disability) {
+    return res.status(400).json({ error: "User ID and disability are required." });
+  }
+
+  // SQL query to insert the user's disability or update if it already exists
+  const query = `
+    INSERT INTO user_disabilities (user_id, disability)
+    VALUES (?, ?) AS new_values
+    ON DUPLICATE KEY UPDATE disability = new_values.disability;
+  `;
+
+  db.query(query, [userId, disability], (err, _) => {
+    if (err) {
+      console.error("Error saving disability:", err.message); // Log the error
+      return res.status(500).json({ error: "Failed to save disability." });
+    }
+
+    res.status(200).json({ message: "Disability saved successfully." });
+  });
+});
+
   
 // Start the server
 app.listen(PORT, () => {

@@ -1,28 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personalization Page</title>
-    <link rel="stylesheet" href="mentorify.css">
-</head>
-<body class="body-personalization">
+    <link rel="stylesheet" href="mentorify.css" />
+  </head>
+  <body class="body-personalization">
     <div class="container">
-        <div class="form-box">
-            <h1 class="title">Personalization</h1>
-            <h2 class="question">Which learning disability do you have?</h2>
-            <div class="options">
-                <button class="option-btn">Dyslexia</button>
-                <button class="option-btn">Dyscalculia</button>
-                <button class="option-btn">ADHD</button>
-                <button class="option-btn">Autism</button>
-            </div>
-            <div class="other-input">
-                <label for="other">Others:</label>
-                <input type="text" id="other" placeholder="Specify other disabilities">
-            </div>
-            <a href="preferences.html" class="next-btn">Next</a>
+      <div class="form-box">
+        <h1 class="title">Personalization</h1>
+        <h2 class="question">Which learning disability do you have?</h2>
+        <div class="options">
+          <button class="option-btn" data-disability="Dyslexia">
+            Dyslexia
+          </button>
+          <button class="option-btn" data-disability="Dyscalculia">
+            Dyscalculia
+          </button>
+          <button class="option-btn" data-disability="ADHD">ADHD</button>
+          <button class="option-btn" data-disability="Autism">Autism</button>
         </div>
+        <div class="other-input">
+          <label for="other">Others:</label>
+          <input
+            type="text"
+            id="other"
+            placeholder="Specify other disabilities"
+          />
+        </div>
+        <button class="next-btn" id="saveDisability">Done</button>
+      </div>
     </div>
-</body>
+
+    <script>
+      let selectedDisability = null; // Track the selected disability
+
+      // Handle button clicks
+      document.querySelectorAll(".option-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          // Toggle the selected state
+          if (selectedDisability === button.innerText) {
+            // If the same button is clicked, unselect it
+            selectedDisability = null;
+            button.classList.remove("selected"); // Remove selected class
+          } else {
+            // If a new button is clicked, select it
+            selectedDisability = button.innerText;
+            // Remove 'selected' class from any other button
+            document.querySelectorAll(".option-btn").forEach((btn) => {
+              btn.classList.remove("selected");
+            });
+            // Add 'selected' class to the clicked button
+            button.classList.add("selected");
+          }
+
+          // You can also handle the disability selection logic here to save the choice
+          console.log("Selected disability:", selectedDisability);
+        });
+      });
+
+      // Save the disability when done (for example, when clicking the "Done" button)
+      document
+        .getElementById("saveDisability")
+        .addEventListener("click", async () => {
+          if (!selectedDisability && !document.getElementById("other").value) {
+            alert("Please select a disability or specify one.");
+            return;
+          }
+
+          const disabilityToSave =
+            selectedDisability || document.getElementById("other").value;
+          const userId = localStorage.getItem("userId");
+
+          if (!userId) {
+            alert("User is not logged in.");
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              "http://localhost:3000/save-disability",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  userId: userId,
+                  disability: disabilityToSave,
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert("Disability saved successfully.");
+              window.location.href = "quicklink.html";
+            } else {
+              alert(data.error || "Failed to save disability.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+          }
+        });
+    </script>
+  </body>
 </html>
