@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat with Mentorify</title>
+    <link rel="stylesheet" href="mentorify.css" />
+    <style>
+    
+        .container-chat {
+            display: flex;
+            width: 80%;
+            height: 90vh;
+            margin: 5vh auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .sidenav-chat {
+            width: 200px;
+            background-color: #d0dbff;
+            padding-top: 20px;
+            padding-right: 15px;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: -50px;
+            margin-top: 0;
+            height: 115%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sidenav-chat a {
+            padding: 15px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            display: block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .sidenav-chat p {
+            padding: 15px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            display: block;
+            text-align: center;
+            width: 100%;
+            margin-top: 500px;
+        }
+
+
+        .sidenav-chat a:hover {
+            color: #f1f1f1;
+            background-color: #a0a0ff;
+            padding-right: -100%;
+        }
+
+        .sidenav-chat-icon {
+            color: black;
+            font-size: 50px;
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .chat-form-area {
+            display: flex;
+            align-items: center;
+            margin-top: 15%;
+        }
+        .chat-form {
+            padding: 12px;
+            border: 2px solid #7ab2d3;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #dff2eb;
+            color: #4a628a;
+            margin-bottom: -60%;
+        }
+
+        .send-icon {
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 175%;
+            color: #7ab2d3;
+            margin-bottom: -60%;
+        }
+
+        .send-icon:hover {
+            color: #7ab2d3;
+            opacity: 75%;
+        }
+
+
+        
+    </style>
+</head>
+<body>
+    <div class="container-chat">
+        <ul class="sidenav-chat">
+            <br>
+            <a href="#" style="background-color: #a0a0ff;">Mentorify</a>
+            <a href="#">Home</a>
+            <a href="#">Profile</a>
+            <a href="#">Messages</a>
+            <a href="#">Settings</a>
+            <p href="#">Username</p>
+        </ul>
+
+        <div class="chat-area">
+            <t class="title" style="opacity: 0.75; text-align: center;">This is where the response will be<br>(How can I assist you today?)</t>
+            
+            <form class="chat-form-area">
+                <a class="send-icon" style="font-size: 260%; margin-right: 10px;">+</a>
+                <input type="text" id="prompt" name="prompt" size="75" placeholder="Message Mentorify" class="chat-form">
+                <a class="send-icon">➤</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
