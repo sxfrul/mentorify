@@ -19,56 +19,51 @@
     </div>
 
     <script>
-        document.getElementById("chatForm").addEventListener("submit", async function (e) {
+        document.getElementById("chatForm").addEventListener("submit", function (e) {
             e.preventDefault(); // Prevent form refresh
 
             const messageInput = document.getElementById("prompt");
             const messageText = messageInput.value.trim();
 
             if (messageText) {
-                // Add user message
+                // Add user message to the chat
                 const userMessageElement = document.createElement("div");
                 userMessageElement.className = "chat-message user";
                 userMessageElement.textContent = messageText;
 
                 document.getElementById("chatMessages").appendChild(userMessageElement);
-                messageInput.value = ""; // Clear input
+                messageInput.value = ""; // Clear input field
 
-                // Fetch AI response
-                try {
-                    const response = await fetch("http://127.0.0.1:5000/chat", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            model: "llama3.2", // Ensure this is the correct model name
-                            messages: [{ role: "user", content: messageText }],
-                        }),
-                    });
+                // Create a placeholder for the bot's response
+                const botMessageElement = document.createElement("div");
+                botMessageElement.className = "chat-message bot";
+                botMessageElement.textContent = "Typing..."; // Initial placeholder
+                document.getElementById("chatMessages").appendChild(botMessageElement);
 
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
+                // Use EventSource for streaming response
+                const eventSource = new EventSource(`http://127.0.0.1:5000/stream_chat?message=${encodeURIComponent(messageText)}`);
 
-                    const data = await response.json();
-
-                    // Add bot response after a short delay
-                    setTimeout(() => {
-                        const botMessageElement = document.createElement("div");
-                        botMessageElement.className = "chat-message bot";
-                        botMessageElement.textContent = data.message;
-
-                        document.getElementById("chatMessages").appendChild(botMessageElement);
+                eventSource.onmessage = function (event) {
+                    const data = JSON.parse(event.data);
+                    if (data.message) {
+                        // Update the same bot message element with chunks
+                        botMessageElement.textContent += data.message;
 
                         // Scroll to the latest message
                         const chatMessages = document.getElementById("chatMessages");
                         chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }, 500);
+                    } else if (data.error) {
+                        console.error("Error from server:", data.error);
+                        botMessageElement.textContent = "Error receiving response.";
+                        eventSource.close(); // Close the connection on error
+                    }
+                };
 
-                } catch (error) {
-                    console.error("Error fetching AI response:", error);
-                }
+                eventSource.onerror = function (err) {
+                    console.error("EventSource failed:", err);
+                    botMessageElement.textContent = "Connection lost. Please try again.";
+                    eventSource.close(); // Close the connection on error
+                };
             }
         });
     </script>
