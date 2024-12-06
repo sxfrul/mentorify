@@ -569,6 +569,7 @@ body {
 
 .chat-sidebar {
     width: 4%;
+    min-width: 4%;
     background-color: #e0eaff;
     padding: 20px;
     border-top-left-radius: 10px;
@@ -648,6 +649,10 @@ body {
     font-size: 16px;
 }
 
+#prompt:focus {
+    outline: none; /* Removes the default focus outline */
+}
+
 .chat-messages {
     text-align: left;
     height: 600px; /* Set a fixed height for the messages area */
@@ -666,17 +671,18 @@ body {
     background-color: #dff2eb;
     color: #333;
     display: inline-block;
-    max-width: 50%; /* Limits messages to half the chatbox */
-    word-wrap: break-word;
+    max-width: 60%; /* Limits messages to half the chatbox */
+    overflow-wrap: break-word;
     margin-right: auto; /* Aligns the message to the left side */
+    box-sizing: border-box;
 }
 
 
 .chat-message.bot {
     align-self: flex-start; /* Aligns user messages to the left */
-    background-color: #d1e7dd;
-    color: #0f5132;
-    padding: 8px 12px;
+    background-color: #f3f3f3;
+    color: black;
+    padding: 12px 12px;
     border-radius: 12px;
     width: 50%; /* Set the width to 50% of the chat area */
     text-align: left;
@@ -686,11 +692,12 @@ body {
 
 .chat-message.user {
     align-self: flex-end; /* Aligns bot messages to the right */
-    background-color: #f8d7da;
-    color: #842029;
-    padding: 8px 12px;
+    background-color: #d7ddf8;
+    color: #202784;
+    padding: 12px 12px;
     border-radius: 12px;
-    width: 50%; /* Set the width to 50% of the chat area */
+    width: 10%;
+    max-width: 60%; /* Set the width to 50% of the chat area */
     text-align: left;
     margin-left: auto; /* Pushes bot message to the right */
     margin-right: 0; /* Ensure it ends at the right */
@@ -711,4 +718,7 @@ body {
     align-items: stretch; /* Ensures full-width stacking */
 }
 
+#chatMessages::-webkit-scrollbar {
+    display: none;
+  }
 
