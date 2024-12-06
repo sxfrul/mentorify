@@ -8,11 +8,24 @@
 </head>
 <body>
     <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+            <div class="chat-profile-section">
+                <img class="chat-profile-icon" src="images/logomentorify.png" alt="Mentorify Logo">
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="active" style="font-size: 120%;">➤</a></li>
+                <li><a href="#" style="font-size: 120%;">🏠︎</a></li>
+                <li><a href="#" style="font-size: 150%;">🌣</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Chat Content -->
         <div class="chat-content">
             <div class="chat-messages" id="chatMessages"></div>
             <form class="chat-input" id="chatForm">
                 <a class="chat-input-icon1">+</a>
-                <input type="text" id="prompt" placeholder="Message Mentorify" />
+                <input type="text" autocomplete="off" id="prompt" placeholder="Message Mentorify" />
                 <button type="submit" class="chat-input-icon2">➤</button>
             </form>
         </div>
