@@ -557,8 +557,7 @@ body {
 /* CSS For Chat Interface */
 
 .chat-container {
-    display: flex;
-    width: 100%;
+    width: 80%;
     max-width: 1500px;
     background-color: #fff;
     border-radius: 10px;
@@ -599,14 +598,12 @@ body {
 
 .chat-content {
     flex-grow: 1;
-    padding: 40px;
+    padding: 10px 10px 10px 10px;
     text-align: center;
-    margin-top: 20%;
     margin-right: 20px;
 }
 
 .chat-input {
-    margin-top: 30%;
     border-radius: 10px;
     display: flex;
 }
@@ -643,4 +640,67 @@ body {
     border-radius: 100px;
     font-size: 16px;
 }
+
+.chat-messages {
+    text-align: left;
+    height: 600px; /* Set a fixed height for the messages area */
+    overflow-y: auto;
+    overflow-x: auto; /* Enable vertical scrolling for overflow content */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+
+.chat-message {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 10px;
+    background-color: #dff2eb;
+    color: #333;
+    display: inline-block;
+    max-width: 50%; /* Limits messages to half the chatbox */
+    word-wrap: break-word;
+    margin-right: auto; /* Aligns the message to the left side */
+}
+
+
+.chat-message.user {
+    align-self: flex-start; /* Aligns user messages to the left */
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 8px 12px;
+    border-radius: 12px;
+    width: 50%; /* Set the width to 50% of the chat area */
+    text-align: left;
+    margin-right: auto; /* Pushes user message to the left */
+    margin-left: 0; /* Ensure it starts at the left */
+}
+
+.chat-message.bot {
+    align-self: flex-end; /* Aligns bot messages to the right */
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 8px 12px;
+    border-radius: 12px;
+    width: 50%; /* Set the width to 50% of the chat area */
+    text-align: left;
+    margin-left: auto; /* Pushes bot message to the right */
+    margin-right: 0; /* Ensure it ends at the right */
+}
+
+
+#chatMessages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 400px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    align-items: stretch; /* Ensures full-width stacking */
+}
+
 
