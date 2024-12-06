@@ -19,53 +19,63 @@
     </div>
 
     <script>
-        document.getElementById("chatForm").addEventListener("submit", function (e) {
-            e.preventDefault(); // Prevent form refresh
+        let eventSource;
+        const chatMessages = document.getElementById("chatMessages");
 
+        function appendMessage(content, type = "bot") {
+            let lastMessage = chatMessages.lastElementChild;
+            if (!lastMessage || lastMessage.className !== `chat-message ${type}`) {
+                lastMessage = document.createElement("div");
+                lastMessage.className = `chat-message ${type}`;
+                chatMessages.appendChild(lastMessage);
+            }
+            lastMessage.innerHTML += content.replace(/\n/g, "<br>"); // Use innerHTML to allow <br> tags
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function startEventSource(message) {
+            if (eventSource) {
+                eventSource.close(); // Close any existing connection
+            }
+
+            eventSource = new EventSource(`http://127.0.0.1:5000/stream_chat?message=${encodeURIComponent(message)}`);
+            // appendMessage("Mentorify is typing...\n", "bot");
+
+            eventSource.onmessage = function (event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.error) {
+                        appendMessage(`Error: ${data.error}`, "error-message");
+                        eventSource.close();
+                    } else if (data.message) {
+                        appendMessage(data.message.replace(/\\n/g, "<br>"), "bot"); // Replace newline escape sequences with <br>
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    appendMessage("Error processing response from Mentorify. Please try again.", "error-message");
+                    eventSource.close();
+                }
+            };
+
+            eventSource.onerror = function (e) {
+                console.error("EventSource encountered an error:", e);
+                eventSource.close();
+            };
+        }
+
+        document.getElementById("chatForm").addEventListener("submit", function (e) {
+            e.preventDefault();
             const messageInput = document.getElementById("prompt");
             const messageText = messageInput.value.trim();
 
             if (messageText) {
-                // Add user message to the chat
-                const userMessageElement = document.createElement("div");
-                userMessageElement.className = "chat-message user";
-                userMessageElement.textContent = messageText;
-
-                document.getElementById("chatMessages").appendChild(userMessageElement);
-                messageInput.value = ""; // Clear input field
-
-                // Create a placeholder for the bot's response
-                const botMessageElement = document.createElement("div");
-                botMessageElement.className = "chat-message bot";
-                botMessageElement.textContent = "Typing..."; // Initial placeholder
-                document.getElementById("chatMessages").appendChild(botMessageElement);
-
-                // Use EventSource for streaming response
-                const eventSource = new EventSource(`http://127.0.0.1:5000/stream_chat?message=${encodeURIComponent(messageText)}`);
-
-                eventSource.onmessage = function (event) {
-                    const data = JSON.parse(event.data);
-                    if (data.message) {
-                        // Update the same bot message element with chunks
-                        botMessageElement.textContent += data.message;
-
-                        // Scroll to the latest message
-                        const chatMessages = document.getElementById("chatMessages");
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    } else if (data.error) {
-                        console.error("Error from server:", data.error);
-                        botMessageElement.textContent = "Error receiving response.";
-                        eventSource.close(); // Close the connection on error
-                    }
-                };
-
-                eventSource.onerror = function (err) {
-                    console.error("EventSource failed:", err);
-                    botMessageElement.textContent = "Connection lost. Please try again.";
-                    eventSource.close(); // Close the connection on error
-                };
+                appendMessage(messageText, "user");
+                messageInput.value = ""; // Clear input
+                startEventSource(messageText);
             }
         });
+
+
     </script>
 </body>
 </html>

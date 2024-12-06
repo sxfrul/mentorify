@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 import json
 import requests
 from flask_cors import CORS
@@ -39,20 +39,20 @@ def generate_response_stream(user_message):
                 body = json.loads(line)
                 if "error" in body:
                     # Send an error message back if there's an error
-                    yield f"data: {{\"error\": \"{body['error']}\"}}\n\n"
+                    yield f"data: {json.dumps({'error': body['error']})}\n\n"
                     return
                 if not body.get("done", True):
                     # Send chunks of the response message
                     content = body.get("message", {}).get("content", "")
                     # Ensure that the content is JSON-encoded
                     safe_content = content.replace('"', '\\"')  # Escape quotes in content
-                    yield f"data: {{\"message\": \"{safe_content}\"}}\n\n"
+                    yield f"data: {json.dumps({'message': safe_content})}\n\n"
 
         # Clear the assistant's messages to keep context small
         messages[:] = messages[:2] + messages[-2:]
 
     except requests.exceptions.RequestException as e:
-        yield f"data: {{\"error\": \"{str(e)}\"}}\n\n"
+        yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
 @app.route('/stream_chat', methods=['GET'])
 def stream_chat():

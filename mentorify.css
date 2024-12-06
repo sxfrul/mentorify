@@ -665,7 +665,7 @@ body {
 }
 
 
-.chat-message.user {
+.chat-message.bot {
     align-self: flex-start; /* Aligns user messages to the left */
     background-color: #d1e7dd;
     color: #0f5132;
@@ -677,7 +677,7 @@ body {
     margin-left: 0; /* Ensure it starts at the left */
 }
 
-.chat-message.bot {
+.chat-message.user {
     align-self: flex-end; /* Aligns bot messages to the right */
     background-color: #f8d7da;
     color: #842029;
