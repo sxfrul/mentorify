@@ -8,15 +8,28 @@ CORS(app)  # Enable CORS for all routes
 
 model = "llama3.2"  # Update this for your specific model
 
+# Initialize the conversation with the system message
+messages = [
+    {
+        "role": "system",
+        "content": "You are a chatbot named Mentorify AI, designed to help people learn."
+    }
+]
+
 @app.route('/chat', methods=['POST'])
 def chat():
+    global messages  # Use the global messages list
     data = request.json
     print("Request received:", data)
+
+    # Extract user message from the request
+    user_message = data.get("messages", [{}])[0]  # Get the user's message
+    messages.append(user_message)  # Add the user's message to the conversation
 
     # Prepare the payload for the ollama API
     payload = {
         "model": model,
-        "messages": data.get("messages", []),  # Use the messages from the request
+        "messages": messages,  # Include all messages in the context
         "stream": True
     }
     print("Payload being sent to ollama:", payload)
@@ -36,7 +49,9 @@ def chat():
                     content = body.get("message", {}).get("content", "")
                     output += content
 
-        return jsonify({"message": output}), 200
+        # Add the assistant's response to the messages list
+        messages.append({"role": "assistant", "content": output.strip()})  # Add the bot's response
+        return jsonify({"message": output.strip()}), 200
 
     except requests.exceptions.RequestException as e:
         print(f"Error during chat: {e}")
