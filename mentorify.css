@@ -101,7 +101,8 @@ main .welcome-text {
 }
 
 .img-login {
-    width: 500px;
+    width: 95px;
+    height: 80px;
 }
 
 .signup-box, .login-box {
@@ -159,7 +160,7 @@ main .welcome-text {
 .body-personalization {
     font-family: Arial, sans-serif;
     /* background-color: #f2f2f2; */
-    background-image: linear-gradient(#4a628a, #7ab2d3, #b9e5e8, #dff2eb);
+    background-image: linear-gradient(#dff2eb,#b9e5e8,#7ab2d3,#4a628a);
     margin: 0;
     padding: 0;
     display: flex;
