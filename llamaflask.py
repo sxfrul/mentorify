@@ -1,35 +1,46 @@
 from flask import Flask, request, jsonify
 import json
 import requests
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-# AI Chat Function
-model = "llama3.2"  # Update to your desired model
+model = "llama3.2"  # Update this for your specific model
 
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    print("Request received:", data)
 
-def chat(messages):
-    r = requests.post(
-        "http://127.0.0.1:11434/api/chat",
-        json={"model": model, "messages": messages, "stream": False},  # Change stream to False for simplicity
-    )
-    r.raise_for_status()
-    response = r.json()
-    if "error" in response:
-        raise Exception(response["error"])
-    return response["message"]["content"]
+    # Prepare the payload for the ollama API
+    payload = {
+        "model": model,
+        "messages": data.get("messages", []),  # Use the messages from the request
+        "stream": True
+    }
+    print("Payload being sent to ollama:", payload)
 
-
-@app.route("/chat", methods=["POST"])
-def chat_endpoint():
     try:
-        data = request.json
-        messages = data.get("messages", [])
-        response = chat(messages)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        response = requests.post("http://127.0.0.1:11434/api/chat", json=payload, stream=True)
+        response.raise_for_status()  # Raise an error for bad responses
 
+        # Process the response from ollama
+        output = ""
+        for line in response.iter_lines():
+            if line:
+                body = json.loads(line)
+                if "error" in body:
+                    return jsonify({"error": body["error"]}), 400
+                if not body.get("done", True):
+                    content = body.get("message", {}).get("content", "")
+                    output += content
 
-if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+        return jsonify({"message": output}), 200
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error during chat: {e}")
+        return jsonify({"error": str(e)}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)

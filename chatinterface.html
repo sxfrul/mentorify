@@ -16,9 +16,10 @@
                 <button type="submit" class="chat-input-icon2">➤</button>
             </form>
         </div>
-    
+    </div>
+
     <script>
-        document.getElementById("chatForm").addEventListener("submit", function (e) {
+        document.getElementById("chatForm").addEventListener("submit", async function (e) {
             e.preventDefault(); // Prevent form refresh
 
             const messageInput = document.getElementById("prompt");
@@ -33,25 +34,43 @@
                 document.getElementById("chatMessages").appendChild(userMessageElement);
                 messageInput.value = ""; // Clear input
 
-                // Scroll to the latest user message
-                const chatMessages = document.getElementById("chatMessages");
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Fetch AI response
+                try {
+                    const response = await fetch("http://127.0.0.1:5000/chat", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "llama3.2", // Ensure this is the correct model name
+                            messages: [{ role: "user", content: messageText }],
+                        }),
+                    });
 
-                // Add bot response after a short delay
-                setTimeout(() => {
-                    const botMessageElement = document.createElement("div");
-                    botMessageElement.className = "chat-message bot";
-                    botMessageElement.textContent = "Hi there!";
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
 
-                    document.getElementById("chatMessages").appendChild(botMessageElement);
+                    const data = await response.json();
 
-                    // Scroll to the latest bot message
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 500); // Delay for bot response (500ms)
+                    // Add bot response after a short delay
+                    setTimeout(() => {
+                        const botMessageElement = document.createElement("div");
+                        botMessageElement.className = "chat-message bot";
+                        botMessageElement.textContent = data.message;
+
+                        document.getElementById("chatMessages").appendChild(botMessageElement);
+
+                        // Scroll to the latest message
+                        const chatMessages = document.getElementById("chatMessages");
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 500);
+
+                } catch (error) {
+                    console.error("Error fetching AI response:", error);
+                }
             }
         });
-    </script>        
-
-    
+    </script>
 </body>
 </html>
