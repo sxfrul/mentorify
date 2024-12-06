@@ -1,2 +1,3 @@
 # Ignore virtual environments
 my-venv/
+node_modules/
