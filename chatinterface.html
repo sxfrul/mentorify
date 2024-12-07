@@ -8,50 +8,87 @@
 </head>
 <body>
     <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+            <div class="chat-profile-section">
+                <img class="chat-profile-icon" src="images/logomentorify.png" alt="Mentorify Logo">
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="active" style="font-size: 120%;">➤</a></li>
+                <li><a href="#" style="font-size: 120%;">🏠︎</a></li>
+                <li><a href="#" style="font-size: 150%;">🌣</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Chat Content -->
         <div class="chat-content">
             <div class="chat-messages" id="chatMessages"></div>
             <form class="chat-input" id="chatForm">
                 <a class="chat-input-icon1">+</a>
-                <input type="text" id="prompt" placeholder="Message Mentorify" />
+                <input type="text" autocomplete="off" id="prompt" placeholder="Message Mentorify" />
                 <button type="submit" class="chat-input-icon2">➤</button>
             </form>
         </div>
-    
-    <script>
-        document.getElementById("chatForm").addEventListener("submit", function (e) {
-            e.preventDefault(); // Prevent form refresh
+    </div>
 
+    <script>
+        let eventSource;
+        const chatMessages = document.getElementById("chatMessages");
+
+        function appendMessage(content, type = "bot") {
+            let lastMessage = chatMessages.lastElementChild;
+            if (!lastMessage || lastMessage.className !== `chat-message ${type}`) {
+                lastMessage = document.createElement("div");
+                lastMessage.className = `chat-message ${type}`;
+                chatMessages.appendChild(lastMessage);
+            }
+            lastMessage.innerHTML += content.replace(/\n/g, "<br>"); // Use innerHTML to allow <br> tags
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function startEventSource(message) {
+            if (eventSource) {
+                eventSource.close(); // Close any existing connection
+            }
+
+            eventSource = new EventSource(`http://118.100.221.247:5000/stream_chat?message=${encodeURIComponent(message)}`);
+            // appendMessage("Mentorify is typing...\n", "bot");
+
+            eventSource.onmessage = function (event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.error) {
+                        appendMessage(`Error: ${data.error}`, "error-message");
+                        eventSource.close();
+                    } else if (data.message) {
+                        appendMessage(data.message.replace(/\\n/g, "<br>"), "bot"); // Replace newline escape sequences with <br>
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    appendMessage("Error processing response from Mentorify. Please try again.", "error-message");
+                    eventSource.close();
+                }
+            };
+
+            eventSource.onerror = function (e) {
+                console.error("EventSource encountered an error:", e);
+                eventSource.close();
+            };
+        }
+
+        document.getElementById("chatForm").addEventListener("submit", function (e) {
+            e.preventDefault();
             const messageInput = document.getElementById("prompt");
             const messageText = messageInput.value.trim();
 
             if (messageText) {
-                // Add user message
-                const userMessageElement = document.createElement("div");
-                userMessageElement.className = "chat-message user";
-                userMessageElement.textContent = messageText;
-
-                document.getElementById("chatMessages").appendChild(userMessageElement);
+                appendMessage(messageText, "user");
                 messageInput.value = ""; // Clear input
-
-                // Scroll to the latest user message
-                const chatMessages = document.getElementById("chatMessages");
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
-                // Add bot response after a short delay
-                setTimeout(() => {
-                    const botMessageElement = document.createElement("div");
-                    botMessageElement.className = "chat-message bot";
-                    botMessageElement.textContent = "Hi there!";
-
-                    document.getElementById("chatMessages").appendChild(botMessageElement);
-
-                    // Scroll to the latest bot message
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 500); // Delay for bot response (500ms)
+                startEventSource(messageText);
             }
         });
-    </script>        
 
-    
+
+    </script>
 </body>
 </html>

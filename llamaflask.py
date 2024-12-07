@@ -1,35 +1,69 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, Response, jsonify
 import json
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-# AI Chat Function
-model = "llama3.2"  # Update to your desired model
+model = "llama3.2"
 
+messages = [
+    {
+        "role": "system",
+        "content": "You are a chatbot named Mentorify AI, designed to help people learn."
+    }
+]
 
-def chat(messages):
-    r = requests.post(
-        "http://127.0.0.1:11434/api/chat",
-        json={"model": model, "messages": messages, "stream": False},  # Change stream to False for simplicity
-    )
-    r.raise_for_status()
-    response = r.json()
-    if "error" in response:
-        raise Exception(response["error"])
-    return response["message"]["content"]
+def generate_response_stream(user_message):
+    """
+    Generator function to stream AI responses chunk by chunk.
+    """
+    # Add the user's message to the conversation
+    messages.append(user_message)
 
+    # Prepare the payload for the API
+    payload = {
+        "model": model,
+        "messages": messages,
+        "stream": True
+    }
 
-@app.route("/chat", methods=["POST"])
-def chat_endpoint():
     try:
-        data = request.json
-        messages = data.get("messages", [])
-        response = chat(messages)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # Make a request to the streaming API
+        response = requests.post("http://118.100.221.247:11434/api/chat", json=payload, stream=True)
+        response.raise_for_status()
 
+        for line in response.iter_lines():
+            if line:
+                body = json.loads(line)
+                if "error" in body:
+                    # Send an error message back if there's an error
+                    yield f"data: {json.dumps({'error': body['error']})}\n\n"
+                    return
+                if not body.get("done", True):
+                    # Send chunks of the response message
+                    content = body.get("message", {}).get("content", "")
+                    # Ensure that the content is JSON-encoded
+                    safe_content = content.replace('"', '\\"')  # Escape quotes in content
+                    yield f"data: {json.dumps({'message': safe_content})}\n\n"
 
-if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+        # Clear the assistant's messages to keep context small
+        messages[:] = messages[:2] + messages[-2:]
+
+    except requests.exceptions.RequestException as e:
+        yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+@app.route('/stream_chat', methods=['GET'])
+def stream_chat():
+    """
+    API endpoint to handle streaming chat responses.
+    """
+    user_message = {
+        "role": "user",
+        "content": request.args.get("message", "")
+    }
+    return Response(generate_response_stream(user_message), content_type='text/event-stream')
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
