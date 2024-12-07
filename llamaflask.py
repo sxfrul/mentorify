@@ -31,7 +31,7 @@ def generate_response_stream(user_message):
 
     try:
         # Make a request to the streaming API
-        response = requests.post("http://127.0.0.1:11434/api/chat", json=payload, stream=True)
+        response = requests.post("http://118.100.221.247:11434/api/chat", json=payload, stream=True)
         response.raise_for_status()
 
         for line in response.iter_lines():
