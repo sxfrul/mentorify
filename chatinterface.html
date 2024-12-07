@@ -51,7 +51,7 @@
                 eventSource.close(); // Close any existing connection
             }
 
-            eventSource = new EventSource(`http://127.0.0.1:5000/stream_chat?message=${encodeURIComponent(message)}`);
+            eventSource = new EventSource(`http://118.100.221.247:5000/stream_chat?message=${encodeURIComponent(message)}`);
             // appendMessage("Mentorify is typing...\n", "bot");
 
             eventSource.onmessage = function (event) {
