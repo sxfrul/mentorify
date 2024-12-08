@@ -678,11 +678,15 @@ body {
     box-sizing: border-box;
 }
 
-
 .chat-message.bot {
-    align-self: flex-start; /* Aligns user messages to the left */
-    background-color: #f3f3f3;
-    color: black;
+    font-family: 'Arial', sans-serif; /* Change to a more readable font */
+    font-weight: 400; /* Reduce font weight for better readability */
+    font-size: 150%; /* Keep font size larger */
+    line-height: 2; /* Increase line height for better spacing */
+    letter-spacing: 5px; /* Adjust letter spacing for inter-letter spacing */
+    word-spacing: 17.5px; /* Adjust word spacing */
+    background-color: #eaeaea; /* Softer background color */
+    color: #333; /* Dark grey for text color */
     padding: 12px 12px;
     border-radius: 12px;
     width: 50%; /* Set the width to 50% of the chat area */
@@ -691,18 +695,25 @@ body {
     margin-left: 0; /* Ensure it starts at the left */
 }
 
+
 .chat-message.user {
-    align-self: flex-end; /* Aligns bot messages to the right */
-    background-color: #d7ddf8;
-    color: #202784;
+    font-family: 'Arial', sans-serif; /* Change to a more readable font */
+    font-weight: 400; /* Reduce font weight for better readability */
+    font-size: 150%; /* Keep font size larger */
+    line-height: 2; /* Increase line height for better spacing */
+    letter-spacing: 5px; /* Adjust letter spacing for inter-letter spacing */
+    word-spacing: 17.5px; /* Adjust word spacing */
+    background-color: #e0e7ff; /* Softer, pastel blue background color */
+    color: #202784; /* Dark color for text, maintain high contrast */
     padding: 12px 12px;
     border-radius: 12px;
-    width: 10%;
-    max-width: 60%; /* Set the width to 50% of the chat area */
+    width: 50%;
+    max-width: 60%; /* Set the width to a maximum of 60% of the chat area */
     text-align: left;
     margin-left: auto; /* Pushes bot message to the right */
     margin-right: 0; /* Ensure it ends at the right */
 }
+
 
 
 #chatMessages {
