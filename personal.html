@@ -12,9 +12,9 @@
         <div class="sidebar">
             <div class="profile-section">
                 <div class="profile-icon"></div>
-                <h2 class="username">User</h2>
+                <h2 class="username"><span id="userNameMain"></span></h2>
             </div>
-            <ul class="nav-menu">
+            <ul class="nav-menu-personal">
                 <li><a href="chatinterface.html">Chat!</a></li>
                 <li><a href="personal.html" class="active">Personal</a></li>
                 <li><a href="quicklink.html">Quick Link</a></li>
@@ -50,6 +50,7 @@
                 if (response.ok) {
                     // Populate the user info display with user data
                     document.getElementById("userName").textContent = data.name || '';
+                    document.getElementById("userNameMain").textContent = data.name || '';
                     document.getElementById("userEmail").textContent = data.email || '';
                     document.getElementById("userDob").textContent = formatDate(data.dob) || '';
                 } else {

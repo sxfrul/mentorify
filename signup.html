@@ -13,14 +13,46 @@
         </header>
         <div class="signup-box">
             <h2>Sign up</h2>
-            <form class="signup-form">
-                <input type="text" placeholder="Name" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <a href="personalization.html" class="signup-button">Signup</a>
-                <a href="personalization.html" class="gsignup-button">Signup with Google</a>
+            <form class="signup-form" id="signupForm">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="date" id="dob" placeholder="Date of Birth" required>
+                <button type="submit" class="signup-button">Sign Up</button>
             </form>
         </div>
     </div>
+
+    <script>
+        // Handle signup
+        document.getElementById("signupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const dob = document.getElementById("dob").value;
+
+            try {
+                const response = await fetch("http://mentorify.ddns.net:3000/signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password, dob })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Sign up successful!");
+                    window.location.href = "login.html"; // Redirect to login page
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
+    </script>
 </body>
 </html>

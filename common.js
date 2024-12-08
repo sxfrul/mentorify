@@ -44,7 +44,7 @@ function captureSelection(buttonSelector, userIdKey, questionCategory, questionN
     };
 
     // Send the data to the server
-    fetch("http://localhost:3000/save-answer", {
+    fetch("http://mentorify.ddns.net:3000/save-answer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

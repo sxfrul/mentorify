@@ -23,6 +23,7 @@
         <!-- Main Chat Content -->
         <div class="chat-content">
             <div class="chat-messages" id="chatMessages"></div>
+            <button id="ttsButton" style="display: none;">🔊 Read Aloud</button> <!-- TTS Button -->
             <form class="chat-input" id="chatForm">
                 <a class="chat-input-icon1">+</a>
                 <input type="text" autocomplete="off" id="prompt" placeholder="Message Mentorify" />
@@ -34,6 +35,8 @@
     <script>
         let eventSource;
         const chatMessages = document.getElementById("chatMessages");
+        const ttsButton = document.getElementById("ttsButton");
+        let fullBotMessage = ""; // Variable to hold the full bot message
 
         function appendMessage(content, type = "bot") {
             let lastMessage = chatMessages.lastElementChild;
@@ -44,6 +47,11 @@
             }
             lastMessage.innerHTML += content.replace(/\n/g, "<br>"); // Use innerHTML to allow <br> tags
             chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Store the bot message if it's a bot response
+            if (type === "bot") {
+                fullBotMessage += content + " "; // Accumulate bot message with space
+            }
         }
 
         function startEventSource(message) {
@@ -52,7 +60,6 @@
             }
 
             eventSource = new EventSource(`http://118.100.221.247:5000/stream_chat?message=${encodeURIComponent(message)}`);
-            // appendMessage("Mentorify is typing...\n", "bot");
 
             eventSource.onmessage = function (event) {
                 try {
@@ -71,8 +78,11 @@
             };
 
             eventSource.onerror = function (e) {
-                console.error("EventSource encountered an error:", e);
+                console.warn("EventSource encountered an error, but this may be normal when the stream ends.");
                 eventSource.close();
+                // Log the full bot message when the stream ends
+                console.log("Full bot message:", fullBotMessage.trim());
+                ttsButton.style.display = "block"; // Show TTS button
             };
         }
 
@@ -84,11 +94,18 @@
             if (messageText) {
                 appendMessage(messageText, "user");
                 messageInput.value = ""; // Clear input
+                fullBotMessage = ""; // Reset the full bot message for the new conversation
+                ttsButton.style.display = "none"; // Hide TTS button
                 startEventSource(messageText);
             }
         });
 
-
+        // TTS Functionality
+        ttsButton.addEventListener("click", function () {
+            const speech = new SpeechSynthesisUtterance(fullBotMessage.trim()); // Trim spaces before speaking
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        });
     </script>
 </body>
 </html>
