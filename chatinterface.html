@@ -59,6 +59,12 @@
                 eventSource.close(); // Close any existing connection
             }
 
+            // Disable the input field and submit button
+            const messageInput = document.getElementById("prompt");
+            const submitButton = document.querySelector(".chat-input-icon2");
+            messageInput.disabled = true;
+            submitButton.disabled = true;
+
             eventSource = new EventSource(`http://118.100.221.247:5000/stream_chat?message=${encodeURIComponent(message)}`);
 
             eventSource.onmessage = function (event) {
@@ -77,12 +83,17 @@
                 }
             };
 
-            eventSource.onerror = function (e) {
+            eventSource.onerror = function () {
                 console.warn("EventSource encountered an error, but this may be normal when the stream ends.");
                 eventSource.close();
                 // Log the full bot message when the stream ends
                 console.log("Full bot message:", fullBotMessage.trim());
                 ttsButton.style.display = "block"; // Show TTS button
+
+                // Re-enable the input field and submit button
+                messageInput.disabled = false;
+                submitButton.disabled = false;
+                messageInput.focus(); // Focus the input field
             };
         }
 
